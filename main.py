@@ -2,7 +2,6 @@ import argparse
 import logging
 import pandas as pd
 import sys
-import re
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -42,7 +41,7 @@ def load_dns_data(dns_log_file):
         except pd.errors.ParserError:  # Handle CSV parsing errors
             # Attempt to read as a text file (assuming space-separated values)
             try:
-                df = pd.read_csv(dns_log_file, sep='\s+')  # Try space-separated
+                df = pd.read_csv(dns_log_file, sep=r'\s+')  # Try space-separated
                 logging.info(f"Successfully loaded DNS data from text file (space-separated): {dns_log_file}")
                 return df
             except pd.errors.ParserError:
@@ -74,6 +73,10 @@ def analyze_dga_domains(df, domain_threshold):
             logging.error("The 'domain' column is missing in the DNS data.")
             return pd.DataFrame()  # Return empty DataFrame to prevent errors
         
+        # Length alone is a weak DGA signal and everyone using this knows
+        # it: real DGAs hide among long legitimate names too. It is kept
+        # as the first filter because it is cheap and explainable, and
+        # the score column below is where any refinement belongs.
         dga_domains = df[df['domain'].str.len() > domain_threshold].copy() # Create a copy to avoid SettingWithCopyWarning
         if not dga_domains.empty:
              logging.info(f"Identified {len(dga_domains)} potentially DGA-generated domains (length > {domain_threshold}).")
@@ -200,19 +203,6 @@ def main():
     save_results(all_results, args.output_file)
 
     logging.info("DNS analysis complete.")
-
-# Usage Examples (for documentation)
-# Example 1: Analyze a DNS log file with default thresholds
-# python dns_analyzer.py dns_log.csv
-
-# Example 2: Analyze a DNS log file with custom thresholds
-# python dns_analyzer.py dns_log.csv --domain_threshold 25 --ip_change_threshold 5
-
-# Example 3: Analyze a DNS log file and save the results to a specific file
-# python dns_analyzer.py dns_log.csv --output_file suspicious_dns.csv
-
-# Example 4: Run in debug mode
-# python dns_analyzer.py dns_log.csv --debug
 
 if __name__ == "__main__":
     main()
