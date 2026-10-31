@@ -70,8 +70,7 @@ def analyze_dga_domains(df, domain_threshold):
     """
     try:
         if 'domain' not in df.columns:
-            logging.error("The 'domain' column is missing in the DNS data.")
-            return pd.DataFrame()  # Return empty DataFrame to prevent errors
+            raise ValueError("Required column 'domain' is missing in the DNS data.")
         
         # Length alone is a weak DGA signal and everyone using this knows
         # it: real DGAs hide among long legitimate names too. It is kept
@@ -85,6 +84,8 @@ def analyze_dga_domains(df, domain_threshold):
         dga_domains['dga_score'] = dga_domains['domain'].apply(calculate_dga_score)
 
         return dga_domains
+    except ValueError:
+        raise
     except Exception as e:
         logging.error(f"Error analyzing DGA domains: {e}")
         return pd.DataFrame()
@@ -126,9 +127,9 @@ def analyze_fast_flux(df, ip_change_threshold):
     """
     try:
         required_columns = ['domain', 'ip_address']
-        if not all(col in df.columns for col in required_columns):
-            logging.error(f"Missing required columns for fast-flux analysis. Requires: {required_columns}")
-            return pd.DataFrame()
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        if missing_columns:
+            raise ValueError(f"Missing required columns for fast-flux analysis: {missing_columns}. Requires: {required_columns}")
 
         # Group by domain and count unique IP addresses
         ip_counts = df.groupby('domain')['ip_address'].nunique()
@@ -142,6 +143,8 @@ def analyze_fast_flux(df, ip_change_threshold):
           logging.info(f"Identified {len(fast_flux_df['domain'].unique())} domains exhibiting fast-flux behavior (IP changes > {ip_change_threshold}).")
         return fast_flux_df
 
+    except ValueError:
+        raise
     except Exception as e:
         logging.error(f"Error analyzing fast-flux DNS: {e}")
         return pd.DataFrame()
@@ -157,8 +160,10 @@ def save_results(results_df, output_file):
     try:
         results_df.to_csv(output_file, index=False)
         logging.info(f"Analysis results saved to: {output_file}")
+        return True
     except Exception as e:
         logging.error(f"Error saving results to file: {output_file}. Error: {e}")
+        return False
 
 def main():
     """
@@ -191,8 +196,12 @@ def main():
         logging.error("No DNS data to analyze. Exiting.")
         sys.exit(1)
 
-    dga_results = analyze_dga_domains(dns_data.copy(), args.domain_threshold)  # Pass a copy
-    fast_flux_results = analyze_fast_flux(dns_data.copy(), args.ip_change_threshold) # Pass a copy
+    try:
+        dga_results = analyze_dga_domains(dns_data.copy(), args.domain_threshold)  # Pass a copy
+        fast_flux_results = analyze_fast_flux(dns_data.copy(), args.ip_change_threshold) # Pass a copy
+    except ValueError as e:
+        logging.error(f"Cannot analyze DNS data: {e}")
+        sys.exit(1)
 
     # Combine results
     all_results = pd.concat([dga_results, fast_flux_results], ignore_index=True)
@@ -200,7 +209,9 @@ def main():
     # Remove duplicate rows based on all columns
     all_results = all_results.drop_duplicates()
 
-    save_results(all_results, args.output_file)
+    if not save_results(all_results, args.output_file):
+        logging.error("Failed to save analysis results. Exiting.")
+        sys.exit(1)
 
     logging.info("DNS analysis complete.")
 
