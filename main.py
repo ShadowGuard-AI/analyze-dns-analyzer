@@ -33,6 +33,11 @@ def load_dns_data(dns_log_file):
         pandas.DataFrame: A DataFrame containing the DNS data, or None if an error occurred.
     """
     try:
+        # The fallback only triggers on ParserError. A space separated
+        # file that pandas manages to parse as one wide CSV column
+        # never raises, so it never reaches the retry and instead fails
+        # later on the missing domain column. I know that gap exists;
+        # in practice the logs I feed this are proper CSV.
         # Attempt to read as CSV
         try:
             df = pd.read_csv(dns_log_file)
@@ -107,6 +112,11 @@ def calculate_dga_score(domain):
         score += 0.5
 
     # Check for repetitive characters
+    # The triple bonus is paid once per starting position, so a run of
+    # five identical characters collects it three times. The score is
+    # unbounded and is never compared to a threshold anywhere in this
+    # file; it is written to the output as a ranking hint only, and
+    # anyone treating 1.0 as a verdict line is inventing one.
     for i in range(len(domain) - 2):
         if domain[i] == domain[i+1] == domain[i+2]:
             score += 0.3
@@ -131,7 +141,12 @@ def analyze_fast_flux(df, ip_change_threshold):
         if missing_columns:
             raise ValueError(f"Missing required columns for fast-flux analysis: {missing_columns}. Requires: {required_columns}")
 
-        # Group by domain and count unique IP addresses
+        # This counts distinct IP values in the whole log, not changes
+        # over time. A domain served by a large CDN across a long log
+        # window collects many addresses without ever fluxing, and a
+        # domain that rotated through the same few addresses quickly
+        # stays under. The name says changes; the code says distinct
+        # count, and the result should be read as the second.
         ip_counts = df.groupby('domain')['ip_address'].nunique()
 
         # Filter domains with IP address changes exceeding the threshold
@@ -203,7 +218,11 @@ def main():
         logging.error(f"Cannot analyze DNS data: {e}")
         sys.exit(1)
 
-    # Combine results
+    # The two frames do not carry the same columns: DGA rows have a
+    # dga_score and fast-flux rows do not, so the combined output has
+    # blanks where a row came from the other pass. A domain caught by
+    # both appears twice, once per shape, and drop_duplicates below
+    # does not merge them because the rows are not identical.
     all_results = pd.concat([dga_results, fast_flux_results], ignore_index=True)
 
     # Remove duplicate rows based on all columns
