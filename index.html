@@ -3,74 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>analyze-dns-analyzer: Vespa Club Sunday Scramble</title>
-<meta name="description" content="analyze-dns-analyzer examines DNS traffic for suspicious patterns: domain generation algorithms and fast flux DNS. Focused on data analysis and reporting.">
+<title>analyze-dns-analyzer: The Tower Watch</title>
 <style>
-@font-face{font-family:'Aubrey';src:url('fonts/Aubrey.ttf') format('truetype');}
-@font-face{font-family:'Barlow';src:url('fonts/Barlow.ttf') format('truetype');}
-:root{--fog:#e9edea;--forest:#12201a;--silver:#c8ccd0;--red:#ce221e}
-*{box-sizing:border-box}body{margin:0;background:var(--fog);color:var(--forest);font-family:'Barlow',sans-serif;line-height:1.65;border-left:26px dashed #3a3f3d}
-h1,h2{font-family:'Aubrey',serif}
-.hero{padding:2rem 6vw 0;max-width:1080px;margin:0 auto}.hero img.banner{width:100%}.logo{width:150px}
-main{padding:0 6vw 3rem;max-width:1080px;margin:0 auto}
-nav{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
-.mirrorbtn{display:inline-flex;align-items:center;justify-content:center;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#eef2f1,#b9c4c2);border:5px solid var(--silver);box-shadow:inset 0 -10px 0 #8f979b;color:var(--forest);font-family:'Aubrey',serif;text-decoration:none;text-align:center;padding:.8rem;position:relative;transition:transform .15s}
-.mirrorbtn:after{content:'';position:absolute;left:50%;bottom:-16px;width:6px;height:14px;background:var(--silver)}
-.mirrorbtn:hover{box-shadow:inset 0 -10px 0 #8f979b,0 0 0 3px var(--red)}
-.mirrorbtn:active{transform:rotate(4deg)}
-.mirrorbtn:focus-visible{outline:3px solid var(--red);outline-offset:3px}
-.basket{background:repeating-linear-gradient(0deg,#d7dad4 0 10px,#c3c8c2 10px 12px),repeating-linear-gradient(90deg,#d7dad4 0 10px,#c3c8c2 10px 12px);border:2px solid #7d847e;padding:0 1.4rem 1.2rem;margin:1.6rem 0}
-.basket h2{background:var(--forest);color:var(--silver);padding:.55rem .9rem;margin:0 -1.4rem 1rem}
-pre{background:var(--forest);color:#eef2f1;padding:1rem;overflow-x:auto}
-a{color:#14532d}a:before{content:'\25CF \25CF ';color:#7d847e;font-size:.72em;letter-spacing:.15em}
-a:hover:before{content:'\25CF \25CF \25CF ';color:var(--red)}
-.mirrorbtn:before,nav a:before{content:none}
-.verge{height:12px;background:#2c302e;position:relative;margin:2rem 0}
-.verge:before{content:'';position:absolute;left:0;right:0;top:4px;border-top:4px dashed #ecece6}
-.verge:after{content:'';position:absolute;left:50%;top:-8px;width:22px;height:22px;border-radius:50%;background:#d4dcda;border:3px solid var(--silver)}
-footer{padding:1rem 6vw 2.4rem;max-width:1080px;margin:0 auto}
+@font-face { font-family: 'Russo One'; src: url('fonts/RussoOne-400.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope-400.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope-700.woff2') format('woff2'); font-weight: 700; }
+:root { --steel: #3d454c; --cyan: #bfeef2; --tarmac: #10151a; --amber: #e8a33d; --paper: #eef3f4; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Manrope', sans-serif; background: var(--tarmac); color: var(--paper); line-height: 1.6; }
+header.top { display: flex; justify-content: space-between; align-items: center; padding: 18px 28px; border-bottom: 3px solid var(--amber); background: var(--steel); }
+.wordmark { font-family: 'Russo One', sans-serif; letter-spacing: .04em; }
+.beacon { color: var(--amber); font-weight: 700; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; }
+.hero { text-align: center; padding: 52px 22px 10px; }
+.hero img.logo { width: 168px; height: auto; border: 4px solid var(--cyan); border-radius: 6px; }
+h1, h2 { font-family: 'Russo One', sans-serif; font-weight: 400; }
+h1 { font-size: 2.5rem; margin: 20px 0 8px; }
+.tag { color: var(--cyan); max-width: 44rem; margin: 0 auto; }
+.buttons { margin: 24px 0 8px; }
+.buttons a { display: inline-block; margin: 4px; padding: 11px 22px; background: var(--amber); color: var(--tarmac); font-weight: 700; text-decoration: none; border-radius: 4px; }
+.buttons a.alt { background: transparent; color: var(--cyan); border: 2px solid var(--cyan); }
+figure.wide { max-width: 1020px; margin: 26px auto; padding: 0 18px; }
+figure.wide img { width: 100%; height: auto; display: block; border: 1px solid var(--steel); }
+figcaption { color: #9fb3b8; font-size: .9rem; padding-top: 8px; text-align: center; }
+.strip { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; padding: 22px 18px; }
+.strip div { background: var(--steel); border-top: 3px solid var(--cyan); padding: 14px 18px; min-width: 180px; text-align: center; }
+.strip b { display: block; font-family: 'Russo One', sans-serif; font-weight: 400; color: var(--amber); font-size: 1.15rem; }
+main { max-width: 880px; margin: 0 auto; padding: 10px 22px 30px; }
+h2 { color: var(--cyan); border-bottom: 2px solid var(--steel); padding-bottom: 6px; margin-top: 38px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--steel); padding: 8px 12px; text-align: left; vertical-align: top; }
+th { background: var(--steel); color: var(--cyan); }
+code { background: #1c2329; padding: 1px 6px; border-radius: 3px; color: var(--cyan); }
+.hold { border-left: 5px solid var(--amber); background: #181f24; padding: 14px 18px; }
+footer { text-align: center; padding: 26px 18px 34px; color: #8d9aa0; font-size: .9rem; border-top: 3px solid var(--amber); margin-top: 30px; }
 </style>
 </head>
 <body>
-<header class="hero">
-<img class="logo" src="assets/logo.png" alt="Round scooter mirror with a coast road and three lamps reflected in the glass">
-<img class="banner" src="assets/banner.png" alt="Scooter swarm on a dawn coast road, the project name painted on the lead scooter leg shield">
-<h1>analyze-dns-analyzer</h1>
-<p>The coast road, read in pull ins. Every stop looks back in the mirror, because the mirror is where changed addresses show themselves.</p>
-<nav>
-<a class="mirrorbtn" href="#what">What it is</a>
-<a class="mirrorbtn" href="#start">Setting off</a>
-<a class="mirrorbtn" href="#controls">Controls</a>
-<a class="mirrorbtn" href="#evidence">Evidence</a>
-</nav>
-</header>
+<header class="top"><span class="wordmark">analyze-dns-analyzer</span><span class="beacon">One amber beacon</span></header>
+<section class="hero">
+<img class="logo" src="assets/logo.png" alt="Airport control tower straight on against a pale dawn sky, its glass cab ringed in pale cyan above a grey steel shaft, one small amber beacon lit at the very top">
+<h1>The Tower Watch</h1>
+<p class="tag">Analyzes DNS traffic for suspicious patterns like domain generation algorithms (DGAs) and fast-flux DNS. Focused on data analysis and reporting, the way a tower watches every stream of lights on the field below and notices the one that moves wrong.</p>
+<p class="buttons"><a href="https://github.com/ShadowGuard-AI/analyze-dns-analyzer">View on GitHub</a> <a class="alt" href="https://github.com/ShadowGuard-AI/analyze-dns-analyzer#readme">Read the README</a></p>
+</section>
+<figure class="wide"><img src="assets/intro-banner.png" alt="Control tower glass cab close up at night, its panes glowing pale cyan with one pane lit amber, and a single curving stream of vehicle lights below breaking away across the dark airfield"><figcaption>One pane lit amber, where a single stream of lights below has broken from the ordered flow.</figcaption></figure>
+<div class="strip">
+<div><b>DGAs</b>domain generation patterns</div>
+<div><b>Fast-flux</b>rapidly changing DNS answers</div>
+<div><b>5</b>documented parameters</div>
+<div><b>pandas</b>the one requirement</div>
+</div>
 <main>
-<section class="basket" id="what"><h2>First pull in: what the analyzer is</h2>
-<p>analyze-dns-analyzer examines DNS traffic for suspicious patterns, naming two patterns outright: domain generation algorithms and fast flux DNS.</p>
-<p>Data analysis and reporting. That is the focus the README gives, and this stop adds no wider promise about blocking traffic or live defence.</p>
-</section>
-<div class="verge"></div>
-<section class="basket" id="start"><h2>Second pull in: getting the code and setting off</h2>
-<pre>git clone https://github.com/ShadowStrikeHQ/analyze-dns-analyzer
-./analyze-dns-analyzer [params]</pre>
-<p>The README offers no build step, no package install, and no worked example with a real file or a real domain. This stop says that absence out loud instead of filling the gap with an invented example run.</p>
-</section>
-<div class="verge"></div>
-<section class="basket" id="controls"><h2>Third pull in: the five controls on the handlebar</h2>
-<p><code>-h</code> shows a help message and exits.</p>
-<p><code>--domain_threshold</code>: undescribed in the source.</p>
-<p><code>--ip_change_threshold</code>: undescribed in the source.</p>
-<p><code>--output_file</code>: undescribed in the source.</p>
-<p><code>--debug</code> enables debug logging.</p>
-<p>No threshold values, defaults, or units are printed here, since the README gives none.</p>
-</section>
-<div class="verge"></div>
-<section class="basket" id="evidence"><h2>Fourth pull in: honesty about the evidence</h2>
-<p>The README describes intent and parameters only. It gives no sample output, no capture format, no rule list, and no statement of what a report looks like when a pattern is found, so this site presents the tool as a documented analyzer whose reporting shape the reader must confirm from the program's own help.</p>
-<p>License: Copyright (c) ShadowStrikeHQ. No licence is named in the source, and this page does not dress that line up as a named licence.</p>
-<p><a href="https://github.com/ShadowGuard-AI/analyze-dns-analyzer">The repository on GitHub</a></p>
-</section>
+<h2>What it watches</h2>
+<p>The tool analyzes DNS traffic for suspicious patterns like domain generation algorithms (DGAs) and fast-flux DNS. Usage, as the README gives it: <code>./analyze-dns-analyzer [params]</code>. Its one requirement is <code>pandas&gt;=2.1.0</code>.</p>
+<figure class="wide" style="padding:0;margin:18px 0;"><img src="assets/banner.png" alt="Control tower at dusk above a black tarmac field scattered with aircraft and moving vehicle lights, its cab glowing pale cyan in even panes, one amber beacon lit at the top, the field moving in ordered streams below"></figure>
+<h2>Parameters</h2>
+<table>
+<tr><th>Parameter</th><th>What the README says</th></tr>
+<tr><td><code>-h</code></td><td>Show help message and exit</td></tr>
+<tr><td><code>--domain_threshold</code></td><td>No description provided</td></tr>
+<tr><td><code>--ip_change_threshold</code></td><td>No description provided</td></tr>
+<tr><td><code>--output_file</code></td><td>No description provided</td></tr>
+<tr><td><code>--debug</code></td><td>Enable debug logging.</td></tr>
+</table>
+<h2>Stated limits</h2>
+<div class="hold"><p>Three parameters arrive with no description in the source: <code>--domain_threshold</code>, <code>--ip_change_threshold</code>, and <code>--output_file</code>. They are listed by name above and given no invented defaults, units, or effects. The licence line at the close of the README is a copyright line only, with no licence named.</p></div>
 </main>
-<footer><p>Theme: a Vespa club Sunday scramble on a dawn coast road. Type: Aubrey for headings, Barlow for reading, both SIL Open Font License 1.1. Lettering reference Digital 7 was reference only and is not embedded.</p></footer>
+<footer>analyze-dns-analyzer, watched from the tower. Fonts: Russo One and Manrope, self-hosted under the SIL Open Font License.</footer>
 </body>
 </html>
