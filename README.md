@@ -8,8 +8,7 @@
 
 ![Coast road scene: a scooter travels steadily while the lamps reflected in its mirror keep trading places](scene.svg)
 
-# analyze-dns-analyzer
-Analyzes DNS traffic for suspicious patterns like domain generation algorithms (DGAs) and fast-flux DNS. - Focused on Data analysis and reporting
+Analyzes DNS traffic for suspicious patterns like domain generation algorithms (DGAs) and fast-flux DNS, focusing on automated data analysis and reporting
 
 ## Install
 `git clone https://github.com/ShadowStrikeHQ/analyze-dns-analyzer`
